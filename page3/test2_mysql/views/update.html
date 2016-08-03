@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>add</title>
+		<link rel="stylesheet" type="text/css" href="bootstrap-3.3.5-dist/css/bootstrap.min.css">
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript">
+			
+			
+			$(function(){
+				//select the lbs option
+				var lbs = <%=data[0].lbs%>;
+				var select = document.getElementById("lbs");  
+				for(var i=0; i<select.options.length; i++){  
+				    if(select.options[i].value == lbs){  
+				        select.options[i].selected = true;  
+				        break;  
+				    }  
+				}  
+			});
+		
+			//submit edit the data
+			function edit(){
+				if($("#name").val() == ""){
+					alert('please enter the name');
+					$("#name").focus();
+					return;
+				}
+				if($("#reps").val() == ""){
+					alert('please enter the reps');
+					$("#reps").focus();
+					return;
+				}
+				if($("#weight").val() == ""){
+					alert('please enter the weight');
+					$("#weight").focus();
+					return;
+				}
+				$.ajax({
+					url:'update',
+					data:{
+						id:$("#id").val(),
+						name:$("#name").val(),
+						reps:$("#reps").val(),
+						weight:$("#weight").val(),
+						lbs:$("#lbs").val()
+					},
+					success:function(data){
+						if(data == 'ok'){
+							alert('Congratulations, update success!');
+							location.href = '/';
+						}else{
+							alert('Sorry, update fail,please try it again!');
+						}
+					}
+				})
+				
+			}
+			
+		</script>
+	</head>
+	<body style="padding: 10px;">
+		<div class="container">
+			<form class="form-horizontal" role="form">
+			   <div class="form-group">
+			      <label for="name" class="col-sm-3 control-label">name</label>
+			      <div class="col-sm-9">
+			      	<input type="hidden" id="id" value="<%=data[0].id%>" />
+			         <input type="text" class="form-control" id="name"
+			            placeholder="the name of the exercise" value="<%=data[0].name%>">
+			      </div>
+			   </div>
+			   <div class="form-group">
+			      <label for="reps" class="col-sm-3 control-label">reps</label>
+			      <div class="col-sm-9">
+			         <input type="number" class="form-control" id="reps" 
+			            placeholder="the number of times the exercise was performed" value="<%=data[0].reps%>">
+			      </div>
+			   </div>
+			   <div class="form-group">
+			      <label for="weight" class="col-sm-3 control-label">weight</label>
+			      <div class="col-sm-9">
+			         <input type="number" class="form-control" id="weight" 
+			            placeholder="the weight of the weights used" value="<%=data[0].weight%>">
+			      </div>
+			   </div>
+			   <div class="form-group">
+			      <label for="lbs" class="col-sm-3 control-label">lbs</label>
+			      <div class="col-sm-9">
+			      	<select class="form-control col-sm-9" id="lbs" value="<%=data[0].lbs%>">
+			      		<option value="1">lbs</option>
+				        <option value="0">kgs</option>
+				    </select>
+			      </div>
+			   </div>
+			   <div class="form-group">
+			      <div align="center">
+			         <button type="button" class="btn btn-success" onclick="edit()">edit</button>
+			         <a type="submit" class="btn btn-default" href="/">back</a>
+			      </div>
+			   </div>
+			</form>
+		</div>
+	</body>
+</html>
+
+
+
+
+

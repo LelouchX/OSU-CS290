@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>workouts</title>
+		<link rel="stylesheet" type="text/css" href="bootstrap-3.3.5-dist/css/bootstrap.min.css">
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" >
+			
+			$(function(){
+				query();
+			})
+			
+			//query all the data
+			function query(){
+				$.ajax({
+					'type':'get',
+					'url':'/queryAll',
+					'dataType':"json",
+					'success':function(data){
+						if(data){
+							var html = '';
+							for(var i in data){
+								html += '<tr>';
+								html += '<td>'+data[i].name+'</td>';
+								html += '<td>'+data[i].reps+'</td>';
+								html += '<td>'+data[i].weight+'</td>';
+								html += '<td>'+data[i].date+'</td>';
+								html += '<td>'+(data[i].lbs==1?'lbs':'kgs')+'</td>';
+								html += '<td>';
+								html +=	'<a href="#" class="btn btn-danger" onclick="del('+data[i].id+')">delete</a>&nbsp;&nbsp;';
+								html += '<a href="queryById?id='+data[i].id+'" class="btn btn-warning">edit</a>';
+								html += '</td>';
+								html += '</tr>';
+							}
+							$("#all").html(html);
+						}
+					}
+				});			
+			}
+			
+			
+			function del(id){
+				if(window.confirm('Do you want to delete this row ?')){
+					$.ajax({
+						'type':'get',
+						'url':'/del',
+						'data':{id:id},
+						'success':function(data){
+							if(data == 'ok'){
+								alert('delete success');
+								query();
+							}else{
+								alert('delete fail');
+							}
+						}
+					})
+				}
+			}
+			
+			function add(){
+				if($("#name").val() == ""){
+					alert('please enter the name');
+					$("#name").focus();
+					return;
+				}
+				if($("#reps").val() == ""){
+					alert('please enter the reps');
+					$("#reps").focus();
+					return;
+				}
+				if($("#weight").val() == ""){
+					alert('please enter the weight');
+					$("#weight").focus();
+					return;
+				}
+				$.ajax({
+					url:'addWorkout',
+					data:{
+						name:$("#name").val(),
+						reps:$("#reps").val(),
+						weight:$("#weight").val(),
+						lbs:$("#lbs").val()
+					},
+					success:function(data){
+						if(data == 'ok'){
+							alert('Congratulations, add success!');
+							query();
+						}else{
+							alert('Sorry, add fail,please try it again!');
+						}
+					}
+				})
+				
+			}
+			
+			function reset(){
+				$("#name").val('');
+				$("#reps").val('');
+				$("#weight").val('');
+			}
+		
+		</script>
+	</head>
+	<body style="padding: 10px 10px;">
+		<div class="container">
+			<div style="padding-bottom: 10px;">
+				<form class="form-horizontal" role="form">
+				   <div class="form-group">
+				      <label for="name" class="col-sm-3 control-label">name</label>
+				      <div class="col-sm-7">
+				         <input type="text" class="form-control" id="name"
+				            placeholder="the name of the exercise">
+				      </div>
+				   </div>
+				   <div class="form-group">
+				      <label for="reps" class="col-sm-3 control-label">reps</label>
+				      <div class="col-sm-7">
+				         <input type="number" class="form-control" id="reps" 
+				            placeholder="the number of times the exercise was performed">
+				      </div>
+				   </div>
+				   <div class="form-group">
+				      <label for="weight" class="col-sm-3 control-label">weight</label>
+				      <div class="col-sm-7">
+				         <input type="number" class="form-control" id="weight" 
+				            placeholder="the weight of the weights used">
+				      </div>
+				   </div>
+				   <div class="form-group">
+				      <label for="lbs" class="col-sm-3 control-label">lbs</label>
+				      <div class="col-sm-7">
+				      	<select class="form-control col-sm-7" id="lbs">
+				      		<option value="1">lbs</option>
+					        <option value="0">kgs</option>
+					    </select>
+				      </div>
+				   </div>
+				   <div class="form-group">
+				      <div align="center">
+				         <button type="button" class="btn btn-success" onclick="add()">add</button>
+				         <button type="button" class="btn btn-default" onclick="reset()">reset</button>
+				      </div>
+				   </div>
+				</form>
+			</div>
+			<table class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>name</th>
+						<th>reps</th>
+						<th>weight</th>
+						<th>date</th>
+						<th>lbs</th>
+						<th>operate</th>
+					</tr>
+				</thead>
+				<tbody id="all">
+					
+				</tbody>
+			</table>
+
+		</div>
+	</body>
+</html>
+
+
+
+
+
